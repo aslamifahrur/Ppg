@@ -359,7 +359,7 @@ const valid=liveEstimate&&q>=55&&liveEstimate.bpm>=45&&liveEstimate.bpm<=180&&ac
 if(valid){
  estimates.push({t,bpm:liveEstimate.bpm,quality:q,channel:liveEstimate.kind});
  const smoothed=movingAverageAt(t,estimates);lastValid={t,bpm:smoothed.bpm,kind:liveEstimate.kind};
- el.bpm.textContent=Math.round(lastValid.bpm);el.bpm.style.opacity='1';el.desc.textContent='Live · 2-second moving average';
+ el.bpm.textContent=Math.round(lastValid.bpm);el.bpm.style.opacity='1';el.desc.textContent='Live ';
  el.quality.textContent=q>=75?'Good':'Fair';el.qualityBar.style.width=q+'%';setStatus('Periodic signal detected. Keep your finger still.');
 }else{
  invalidTimes.push(t);el.quality.textContent='Poor';el.qualityBar.style.width='0%';
