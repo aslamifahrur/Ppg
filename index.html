@@ -360,13 +360,13 @@ if(valid){
  estimates.push({t,bpm:liveEstimate.bpm,quality:q,channel:liveEstimate.kind});
  const smoothed=movingAverageAt(t,estimates);lastValid={t,bpm:smoothed.bpm,kind:liveEstimate.kind};
  el.bpm.textContent=Math.round(lastValid.bpm);el.bpm.style.opacity='1';el.desc.textContent='Live ';
- el.quality.textContent=q>=75?'Good':'Fair';el.qualityBar.style.width=q+'%';setStatus('Periodic signal detected. Keep your finger still.');
+ el.quality.textContent=q>=75?'Good':'Fair';el.qualityBar.style.width=q+'%';setStatus('');
 }else{
  invalidTimes.push(t);el.quality.textContent='Poor';el.qualityBar.style.width='0%';
  const holding=lastValid&&t-lastValid.t<=HOLD_SECONDS;
  el.bpm.textContent=holding?Math.round(lastValid.bpm):'--';el.bpm.style.opacity=holding?'.55':'1';
- el.desc.textContent=holding?'HOLD · Last valid BPM ('+(t-lastValid.t).toFixed(1)+' s ago). Not a live reading.':lastValid?'Signal lost. Waiting for a valid reading.':'Acquiring a clean signal (about 3–4 seconds or longer).';
- setStatus(!covered?'Cover the camera and flashlight gently.':clipping?'Red channel saturated; checking green channel. Adjust finger placement.':'Signal unstable. Keep your finger and phone still.');
+ el.desc.textContent=holding?'':'.';
+ setStatus(!covered?'Cover the camera and flashlight gently.':clipping?'':'Signal unstable. Keep your finger and phone still.');
 }}
 
 if(now-lastDrawAt>85){lastDrawAt=now;drawPlot()}if(t>=12000){void stop();return;}
