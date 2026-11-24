@@ -162,20 +162,7 @@ input,select,.button {font-size:16px;}
        <label for="condition">
         Measurement condition
        </label>
-       <select id="condition">
-        <option>
-         Baseline
-        </option>
-        <option>
-         Post-activity
-        </option>
-        <option>
-         Recovery
-        </option>
-        <option>
-         Other
-        </option>
-       </select>
+       <input id="condition" type="text" maxlength="200" placeholder="e.g. Listening to music" required=""/>
       </div>
      </div>
     </section>
@@ -388,7 +375,7 @@ async function start(){if(stream)return;if(!user||!prepareSession())return;if(!n
 async function stop(){if(!stream||el.stop.disabled)return;el.stop.disabled=true;cancelAnimationFrame(raf);if(track&&torchOn){try{await enableTorch(false)}catch(e){}}stream?.getTracks().forEach(t=>t.stop());stream=null;track=null;el.video.srcObject=null;el.empty.hidden=false;el.overlay.hidden=true;el.stop.disabled=true;el.start.disabled=false;el.torch.disabled=true;el.flash.textContent='OFF';setStatus('Measurement complete.');lockFields(false);drawPlot();await saveSession()}
 const key='finger_ppg_moving_average_v2';let session=null,estimates=[],history=[];
 function lockFields(v){for(const id of ['name','age','condition'])$(id).disabled=v}
-function prepareSession(){const name=$('name').value.trim(),age=Number($('age').value);if(!name||!Number.isInteger(age)||age<1||age>120){setStatus('Enter a participant name or ID and a valid age (1–120).');return false}session={id:globalThis.crypto?.randomUUID?.()||Date.now().toString(),name,age,condition:$('condition').value,date:new Date().toISOString()};estimates=[];return true}
+function prepareSession(){const name=$('name').value.trim(),age=Number($('age').value);if(!name||!Number.isInteger(age)||age<1||age>120){setStatus('Enter a participant name or ID and a valid age (1–120).');return false}const condition=$('condition').value.trim();if(!condition){setStatus('Enter a measurement condition.');return false}session={id:globalThis.crypto?.randomUUID?.()||Date.now().toString(),name,age,condition,date:new Date().toISOString()};estimates=[];return true}
 function acceptBPM(t,bpm){const recent=estimates.filter(e=>e.t>t-3).map(e=>e.bpm).sort((a,b)=>a-b);return !recent.length||Math.abs(bpm-recent[Math.floor(recent.length/2)])<=Math.max(15,recent[Math.floor(recent.length/2)]*.2)}
 function movingAverageAt(t,values){const valid=values.filter(e=>e.t>t-2&&e.t<=t);const enough=valid.length>=1&&t-valid.at(-1).t<=1;return {start:Math.max(0,t-2),end:t,bpm:enough?mean(valid.map(e=>e.bpm)):null,quality:enough?mean(valid.map(e=>e.quality)):null,count:valid.length};}
 function summarize5(duration,values){const result=[];for(let t=1;t<=duration;t++)result.push(movingAverageAt(t,values));return result;}
